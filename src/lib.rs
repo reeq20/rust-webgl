@@ -2,7 +2,7 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::{WebGlProgram, WebGlRenderingContext, WebGlShader};
 
-#[wasm_bindgen]
+#[wasm_bindgen(start)]
 pub fn start() -> Result<(), JsValue> {
     let document = web_sys::window().unwrap().document().unwrap();
     let canvas = document.get_element_by_id("canvas").unwrap();
@@ -21,7 +21,7 @@ pub fn start() -> Result<(), JsValue> {
         void main() {
             gl_Position = position;
         }
-        "#,
+    "#,
     )?;
 
     let frag_shader = compile_shader(
@@ -31,13 +31,13 @@ pub fn start() -> Result<(), JsValue> {
         void main() {
             gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
         }
-        "#,
+    "#,
     )?;
 
     let program = link_program(&context, &vert_shader, &frag_shader)?;
     context.use_program(Some(&program));
 
-    let vertices: [f32; 9] = [-0.7, -0.7, 0.0, -0.7, -0.7, 0.0, 0.0, 0.7, 0.0];
+    let vertices: [f32; 9] = [-0.7, -0.7, 0.0, 0.7, -0.7, 0.0, 0.0, 0.7, 0.0];
 
     let buffer = context.create_buffer().ok_or("failed to create buffer")?;
     context.bind_buffer(WebGlRenderingContext::ARRAY_BUFFER, Some(&buffer));
@@ -67,7 +67,6 @@ pub fn start() -> Result<(), JsValue> {
     Ok(())
 }
 
-#[wasm_bindgen]
 pub fn compile_shader(
     context: &WebGlRenderingContext,
     shader_type: u32,
@@ -89,12 +88,10 @@ pub fn compile_shader(
     } else {
         Err(context
             .get_shader_info_log(&shader)
-            .unwrap_or_else(|| String::from("Unknown error creating shader"))
-        )
+            .unwrap_or_else(|| String::from("Unknown error creating shader")))
     }
 }
 
-#[wasm_bindgen]
 pub fn link_program(
     context: &WebGlRenderingContext,
     vert_shader: &WebGlShader,
@@ -115,10 +112,8 @@ pub fn link_program(
     {
         Ok(program)
     } else {
-        Err(
-            context
-                .get_program_info_log(&program)
-                .unwrap_or_else(|| String::from("Unknown error creating program object"))
-        )
+        Err(context
+            .get_program_info_log(&program)
+            .unwrap_or_else(|| String::from("Unknown error creating program object")))
     }
 }

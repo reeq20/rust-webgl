@@ -2,7 +2,7 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::{WebGlProgram, WebGlRenderingContext, WebGlShader};
 
-#[wasm_bindgen(start)]
+#[wasm_bindgen]
 pub fn start() -> Result<(), JsValue> {
     let document = web_sys::window().unwrap().document().unwrap();
     let canvas = document.get_element_by_id("canvas").unwrap();
@@ -29,7 +29,7 @@ pub fn start() -> Result<(), JsValue> {
         WebGlRenderingContext::FRAGMENT_SHADER,
         r#"
         void main() {
-            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
         }
     "#,
     )?;
